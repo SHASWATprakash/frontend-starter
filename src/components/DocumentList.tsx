@@ -2,6 +2,7 @@ import {
   Table, TableHead, TableRow, TableCell,
   TableBody, Button
 } from "@mui/material";
+import { addLineItems } from "src/api/documentApi";
 
 export default function DocumentList({ documents, refresh, showToast }: any) {
   const handleAdd = async (ref: string) => {
