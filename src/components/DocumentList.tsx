@@ -2,6 +2,7 @@ import {
   Table, TableHead, TableRow, TableCell,
   TableBody, Button
 } from "@mui/material";
+import { getApiErrorMessage } from "../utils/apiError";
 
 import { addLineItems, removeLineItems } from "../api/documentApi";
 
@@ -12,37 +13,43 @@ export default function DocumentList({
   loading
 }: any) {
 
-  const handleAdd = async (ref: string) => {
-    const amount = Number(prompt("Enter amount to ADD"));
-    if (!amount || amount <= 0) {
-      showToast("Invalid amount", "error");
-      return;
-    }
+ const handleAdd = async (ref: string) => {
+  const amountStr = prompt("Enter amount to ADD");
 
-    try {
-      await addLineItems(ref, amount);
-      showToast("Line items added");
-      refresh();
-    } catch (err) {
-      showToast("Failed to add line items", "error");
-    }
-  };
+  const amount = Number(amountStr);
+
+  if (!amountStr || isNaN(amount) || amount <= 0) {
+    showToast("Enter a valid positive number", "error");
+    return;
+  }
+
+  try {
+    await addLineItems(ref, amount);
+    showToast("Line items added", "success");
+    refresh();
+  } catch (err: any) {
+    showToast(getApiErrorMessage(err), "error");
+  }
+};
 
   const handleRemove = async (ref: string) => {
-    const amount = Number(prompt("Enter amount to REMOVE"));
-    if (!amount || amount <= 0) {
-      showToast("Invalid amount", "error");
-      return;
-    }
+  const amountStr = prompt("Enter amount to REMOVE");
 
-    try {
-      await removeLineItems(ref, amount);
-      showToast("Line items removed");
-      refresh();
-    } catch (err) {
-      showToast("Failed to remove line items", "error");
-    }
-  };
+  const amount = Number(amountStr);
+
+  if (!amountStr || isNaN(amount) || amount <= 0) {
+    showToast("Enter a valid positive number", "error");
+    return;
+  }
+
+  try {
+    await removeLineItems(ref, amount);
+    showToast("Line items removed", "success");
+    refresh();
+  } catch (err: any) {
+    showToast(getApiErrorMessage(err), "error");
+  }
+};
 
   return (
     <Table>

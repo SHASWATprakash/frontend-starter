@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useDocuments } from "../hooks/useDocuments";
 import DocumentForm from "../components/DocumentForm";
 import DocumentList from "../components/DocumentList";
+import { getApiErrorMessage } from "../utils/apiError";
 
 export default function DocumentPage() {
   const { documents, refresh, loading } = useDocuments();
@@ -60,7 +61,9 @@ export default function DocumentPage() {
           showToast("Document created successfully");
           refresh();
         }}
-        onError={(msg: string) => showToast(msg, "error")}
+      onError={(err: any) => {
+  showToast(getApiErrorMessage(err), "error");
+}}
       />
 
       {/* 🔍 Search + Filter UI */}
