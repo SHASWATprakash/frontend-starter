@@ -2,7 +2,7 @@ import axios from "axios";
 import { Document } from "../types/document";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 export const getDocuments = () => API.get<Document[]>("/documents/");
