@@ -2,17 +2,45 @@ import {
   Table, TableHead, TableRow, TableCell,
   TableBody, Button
 } from "@mui/material";
-import { addLineItems } from "../api/documentApi";
 
-export default function DocumentList({ documents, refresh, showToast }: any) {
+import { addLineItems, removeLineItems } from "../api/documentApi";
+
+export default function DocumentList({
+  documents,
+  refresh,
+  showToast,
+  loading
+}: any) {
+
   const handleAdd = async (ref: string) => {
-    const amount = Number(prompt("Add amount"));
+    const amount = Number(prompt("Enter amount to ADD"));
+    if (!amount || amount <= 0) {
+      showToast("Invalid amount", "error");
+      return;
+    }
+
     try {
       await addLineItems(ref, amount);
       showToast("Line items added");
       refresh();
-    } catch {
-      showToast("Failed to add", "error");
+    } catch (err) {
+      showToast("Failed to add line items", "error");
+    }
+  };
+
+  const handleRemove = async (ref: string) => {
+    const amount = Number(prompt("Enter amount to REMOVE"));
+    if (!amount || amount <= 0) {
+      showToast("Invalid amount", "error");
+      return;
+    }
+
+    try {
+      await removeLineItems(ref, amount);
+      showToast("Line items removed");
+      refresh();
+    } catch (err) {
+      showToast("Failed to remove line items", "error");
     }
   };
 
@@ -38,8 +66,23 @@ export default function DocumentList({ documents, refresh, showToast }: any) {
               {doc.line_item_count}/{doc.line_item_limit}
             </TableCell>
 
-            <TableCell>
-              <Button onClick={() => handleAdd(doc.reference)}>Add</Button>
+            <TableCell style={{ display: "flex", gap: "8px" }}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => handleAdd(doc.reference)}
+              >
+                Add
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                size="small"
+                onClick={() => handleRemove(doc.reference)}
+              >
+                Remove
+              </Button>
             </TableCell>
           </TableRow>
         ))}
